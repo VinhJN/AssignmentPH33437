@@ -35,10 +35,22 @@ val Typography = Typography(
     */
 )
 
+val Merriweather_regular = FontFamily(
+    Font(R.font.merriweather_regular, FontWeight.W400),
+)
+
+val Merriweather_bold = FontFamily(
+    Font(R.font.merriweather_bold, FontWeight.W700),
+)
+
 val gelasioFontFamily = FontFamily(
     Font(R.font.gelasio_semibold, FontWeight.Black),
 )
 
 val nunitosansFontFamily = FontFamily(
     Font(R.font.nunitosans_10pt_semiexpanded_semibold, FontWeight.Black),
+)
+
+val merriweatherFontFamily = FontFamily(
+    Font(R.font.merriweather, FontWeight.Black),
 )
