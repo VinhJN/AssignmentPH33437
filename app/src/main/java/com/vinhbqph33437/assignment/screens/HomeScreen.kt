@@ -6,8 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -29,6 +27,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import com.vinhbqph33437.assignment.R
+import com.vinhbqph33437.assignment.navigation.BottomNavigationBar
+import com.vinhbqph33437.assignment.navigation.getRouteForIndex
 import com.vinhbqph33437.assignment.ui.theme.AssignmentTheme
 import com.vinhbqph33437.assignment.ui.theme.gelasioFontFamily
 import com.vinhbqph33437.assignment.ui.theme.nunitosansFontFamily
@@ -69,6 +69,15 @@ fun MyApp() {
     }
 }
 
+@Composable
+fun NavigationHost(navController: NavHostController) {
+    NavHost(navController, startDestination = NavigationItem.Home.route) {
+        composable(NavigationItem.Home.route) { HomeContent() }
+        composable(NavigationItem.Favorites.route) { FavoriteScreenContent() }
+        composable(NavigationItem.Notifications.route) { NotificationScreenContent() }
+        composable(NavigationItem.Profile.route) { ProfileScreenContent() }
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -84,7 +93,7 @@ fun CustomTopAppBar() {
                     Icon(
                         imageVector = Icons.Default.Search,
                         contentDescription = "Search",
-                        tint = Color.Gray // Thay đổi màu của icon sang màu xám
+                        tint = Color.Gray
                     )
                 }
                 Column(
@@ -104,14 +113,13 @@ fun CustomTopAppBar() {
                         fontWeight = FontWeight(700),
                         fontSize = 20.sp,
                         fontFamily = gelasioFontFamily
-
                     )
                 }
                 IconButton(onClick = { }) {
                     Icon(
                         imageVector = Icons.Default.ShoppingCart,
                         contentDescription = "Cart",
-                        tint = Color.Gray // Thay đổi màu của icon sang màu xám
+                        tint = Color.Gray
                     )
                 }
             }
@@ -123,57 +131,9 @@ fun CustomTopAppBar() {
     )
 }
 
-
-
-
-@Composable
-fun BottomNavigationBar(selectedTab: Int, onTabSelected: (Int) -> Unit) {
-    NavigationBar(
-        containerColor = Color.White,
-        contentColor = Color.Black
-    ) {
-        val items = listOf("Trang chủ", "Yêu thích", "Thông báo", "Hồ sơ")
-        val icons = listOf(
-            Icons.Filled.Home,
-            Icons.Filled.Favorite,
-            Icons.Filled.Notifications,
-            Icons.Filled.Person
-        )
-
-        items.forEachIndexed { index, item ->
-            NavigationBarItem(
-                icon = { Icon(icons[index], contentDescription = item) },
-                label = { Text(item) },
-                selected = selectedTab == index,
-                onClick = { onTabSelected(index) },
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = Color.Black,
-                    selectedTextColor = Color.Black,
-                    unselectedIconColor = Color.Black,
-                    unselectedTextColor = Color.Gray
-                )
-            )
-        }
-    }
-}
-
-@Composable
-fun NavigationHost(navController: NavHostController) {
-    NavHost(navController, startDestination = NavigationItem.Home.route) {
-        composable(NavigationItem.Home.route) { HomeContent() }
-        composable(NavigationItem.Favorites.route) { FavoritesContent() }
-        composable(NavigationItem.Notifications.route) { NotificationsContent() }
-        composable(NavigationItem.Profile.route) { ProfileContent() }
-    }
-}
-
 @Composable
 fun HomeContent() {
-    val categoryIcons = listOf<ImageBitmap>(
-        // Here you should provide actual ImageBitmaps for each category icon
-        // Example: ImageBitmap.fromResource(resources, R.drawable.category_icon)
-        // Another example: painterResource(id = R.drawable.category_icon)
-    )
+    val categoryIcons = listOf<ImageBitmap>()
 
     Column(
         modifier = Modifier
@@ -188,26 +148,8 @@ fun HomeContent() {
     }
 }
 
-
-
-@Composable
-fun FavoritesContent() {
-    // Content for Favorites
-}
-
-@Composable
-fun NotificationsContent() {
-    // Content for Notifications
-}
-
-@Composable
-fun ProfileContent() {
-    // Content for Profile
-}
-
 @Composable
 fun ProductCategoryRow(categoryIcons: List<ImageBitmap>) {
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -225,7 +167,6 @@ fun ProductCategoryRow(categoryIcons: List<ImageBitmap>) {
                         .clip(CircleShape)
                         .background(if (category == "Popular") Color.Black else Color.Gray.copy(alpha = 0.1f))
                 ) {
-                    // Thêm hình ảnh hoặc biểu tượng tương ứng cho mỗi danh mục
                     val icon = categoryIcons.getOrNull(index)
                     if (icon != null) {
                         Image(
@@ -234,7 +175,6 @@ fun ProductCategoryRow(categoryIcons: List<ImageBitmap>) {
                             modifier = Modifier.fillMaxSize()
                         )
                     } else {
-                        // Nếu không có hình ảnh hoặc biểu tượng, bạn có thể thêm Text thay thế
                         Text(
                             text = category.first().toString(),
                             color = if (category == "Popular") Color.White else Color.Black,
@@ -254,8 +194,6 @@ fun ProductCategoryRow(categoryIcons: List<ImageBitmap>) {
         }
     }
 }
-
-
 
 @Composable
 fun ProductList() {
@@ -329,7 +267,7 @@ fun ProductItem(product: Product) {
                             .padding(4.dp)
                     ) {
                         Icon(
-                            imageVector = Icons.Default.FavoriteBorder,
+                            imageVector = Icons.Default.ShoppingCart,
                             contentDescription = "Favorite",
                             tint = Color.Gray
                         )
@@ -352,23 +290,11 @@ fun ProductItem(product: Product) {
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                 )
             }
-
         }
     }
 }
 
-
 data class Product(val name: String, val price: String, val imageRes: Int)
-
-fun getRouteForIndex(index: Int): String {
-    return when (index) {
-        0 -> NavigationItem.Home.route
-        1 -> NavigationItem.Favorites.route
-        2 -> NavigationItem.Notifications.route
-        3 -> NavigationItem.Profile.route
-        else -> NavigationItem.Home.route
-    }
-}
 
 sealed class NavigationItem(var route: String, var icon: ImageVector, var title: String) {
     object Home : NavigationItem("home", Icons.Filled.Home, "Home")

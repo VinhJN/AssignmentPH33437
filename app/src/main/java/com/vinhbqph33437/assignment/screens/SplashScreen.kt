@@ -21,6 +21,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.vinhbqph33437.assignment.R
 import com.vinhbqph33437.assignment.ui.theme.AssignmentTheme
 import com.vinhbqph33437.assignment.ui.theme.gelasioFontFamily
@@ -32,16 +34,15 @@ class SplashScreen : AppCompatActivity() {
         setContent {
             AssignmentTheme {
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    Splash()
+                    SplashScreenPreview()
                 }
             }
         }
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun Splash() {
+fun SplashScreenContent(navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -98,7 +99,9 @@ fun Splash() {
             Spacer(modifier = Modifier.weight(1f))
 
             Button(
-                onClick = { /*TODO: Add your onClick code here*/ },
+                onClick = {
+                    navController.navigate("login")
+                },
                 shape = RoundedCornerShape(0.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
                 modifier = Modifier
@@ -106,10 +109,17 @@ fun Splash() {
                     .height(48.dp)
                     .fillMaxWidth(),
             ) {
-                Text(text = "Get Started", fontSize = 16.sp, color = Color.White, fontFamily = gelasioFontFamily)
+                Text(text = "Get Started", fontSize = 16.sp, color = Color.White)
             }
             Spacer(modifier = Modifier.height(100.dp))
 
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SplashScreenPreview() {
+    val navController = rememberNavController()
+    SplashScreenContent(navController)
 }
