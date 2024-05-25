@@ -191,19 +191,46 @@ fun ProductDetailScreen(navController: NavHostController) {
                 lineHeight = 24.sp
             )
             Spacer(modifier = Modifier.height(16.dp))
-            Button(
-                onClick = { /* TODO: Handle add to cart */ },
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
+            ){
+
+            Box(
+                modifier = Modifier
+                    .height(56.dp)
+                    .width(60.dp)
+                    .background(
+                        Color("#F0F0F0".toColorInt()), shape = RoundedCornerShape(8.dp)
+                    ),
+                contentAlignment = Alignment.Center,
+            ) {
+                IconButton(onClick = { }) {
+                    Icon(
+                        imageVector = Icons.Default.FavoriteBorder,
+                        contentDescription = "Favorite",
+                    )
+                }
+            }
+            Button(
+                onClick = { /* TODO: Add to cart */ },
+                modifier = Modifier
+                    .width(300.dp)
+                    .height(60.dp)
+                    .shadow(elevation = 8.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color("#303030".toColorInt())),
+                shape = RoundedCornerShape(8.dp)
             ) {
                 Text(
-                    "Add to Cart",
-                    color = Color.White,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.W600,
-                    fontFamily = nunitosansFontFamily
+                    "Add to cart",
+                    fontSize = 20.sp,
+                    fontFamily = nunitosansFontFamily,
+                    fontWeight = FontWeight.W600
                 )
             }
+            }
+
         }
     }
 }

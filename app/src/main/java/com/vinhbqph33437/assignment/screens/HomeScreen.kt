@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -55,34 +54,37 @@ import com.vinhbqph33437.assignment.ui.theme.gelasioFontFamily
 import com.vinhbqph33437.assignment.ui.theme.nunitosansFontFamily
 
 @Composable
-fun HomeScreen() {
-    val navController = rememberNavController()
+fun HomeScreen(navController: NavHostController) {
+    val innerNavController = rememberNavController()
     var selectedTab by remember { mutableIntStateOf(0) }
     val titles = listOf("Make home", "Favorites", "Notification", "Profile")
 
     Scaffold(topBar = {
         CustomTopAppBar(
-            title = titles[selectedTab], showBeautifulText = selectedTab == 0
+            title = titles[selectedTab], showBeautifulText = selectedTab == 0, navController
         )
     }, bottomBar = {
         BottomNavigationBar(selectedTab = selectedTab) { index ->
             selectedTab = index
-            navController.navigate(getRouteForIndex(index)) {
-                popUpTo(navController.graph.startDestinationId) { saveState = true }
+            innerNavController.navigate(getRouteForIndex(index)) {
+                popUpTo(innerNavController.graph.startDestinationId) { saveState = true }
                 launchSingleTop = true
                 restoreState = true
             }
         }
     }) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
-            NavigationHost(navController)
+            NavigationHost(innerNavController)
+            if (selectedTab == 0) {
+                HomeContent(navController)
+            }
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomTopAppBar(title: String, showBeautifulText: Boolean) {
+fun CustomTopAppBar(title: String, showBeautifulText: Boolean, navController: NavHostController) {
     TopAppBar(
         title = {
             Row(
@@ -118,7 +120,9 @@ fun CustomTopAppBar(title: String, showBeautifulText: Boolean) {
                         )
                     }
                 }
-                IconButton(onClick = { }) {
+                IconButton(onClick = {
+                    navController.navigate("Cart")
+                }) {
                     Icon(
                         imageVector = Icons.Default.ShoppingCart,
                         contentDescription = "Cart",
@@ -136,7 +140,7 @@ fun CustomTopAppBar(title: String, showBeautifulText: Boolean) {
 @Composable
 fun NavigationHost(navController: NavHostController) {
     NavHost(navController, startDestination = NavigationItem.Home.route) {
-        composable(NavigationItem.Home.route) { HomeContent() }
+        composable(NavigationItem.Home.route) { HomeContent(navController) }
         composable(NavigationItem.Favorites.route) { FavoriteScreenContent() }
         composable(NavigationItem.Notification.route) { NotificationScreenContent() }
         composable(NavigationItem.Profile.route) { ProfileScreenContent() }
@@ -144,7 +148,7 @@ fun NavigationHost(navController: NavHostController) {
 }
 
 @Composable
-fun HomeContent() {
+fun HomeContent(navController: NavHostController) {
     val categoryIcons = listOf(
         painterResource(id = R.drawable.star),
         painterResource(id = R.drawable.chair_categories),
@@ -162,7 +166,7 @@ fun HomeContent() {
         Spacer(modifier = Modifier.height(8.dp))
         ProductCategoryRow(categoryIcons)
         Spacer(modifier = Modifier.height(16.dp))
-        ProductList()
+        ProductList(navController)
     }
 }
 
@@ -220,9 +224,8 @@ fun ProductCategoryRow(categoryIcons: List<Painter>) {
     }
 }
 
-
 @Composable
-fun ProductList() {
+fun ProductList(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -230,7 +233,7 @@ fun ProductList() {
     ) {
         val rows = products.chunked(2)
         rows.forEachIndexed { index, row ->
-            ProductRow(row)
+            ProductRow(row, navController)
             if (index < rows.size - 1) {
                 Spacer(modifier = Modifier.height(16.dp))
             }
@@ -239,18 +242,18 @@ fun ProductList() {
 }
 
 @Composable
-fun ProductRow(products: List<Product>) {
+fun ProductRow(products: List<Product>, navController: NavHostController) {
     Row(
         modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
     ) {
         products.forEach { product ->
-            ProductItem(product)
+            ProductItem(product, navController)
         }
     }
 }
 
 @Composable
-fun ProductItem(product: Product) {
+fun ProductItem(product: Product, navController: NavHostController) {
     Box(
         modifier = Modifier
             .width(180.dp)
@@ -276,20 +279,26 @@ fun ProductItem(product: Product) {
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxSize()
                     )
-                    IconButton(
-                        onClick = {
-
-                                  },
+                    Box(
                         modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .padding(4.dp)
+                            .padding(10.dp)
+                            .size(30.dp)
+                            .background(
+                                Color.Gray.copy(alpha = 0.5f), shape = RoundedCornerShape(6.dp)
+                            )
+                            .align(Alignment.BottomEnd),
+                        contentAlignment = Alignment.Center,
                     ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_detail),
-                            modifier = Modifier.size(20.dp),
-                            contentDescription = "Favorite",
-                            tint = Color.Gray
-                        )
+                        IconButton(
+                            onClick = { navController.navigate("Detail") },
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_detail),
+                                contentDescription = "Favorite",
+                                tint = Color.White,
+                                modifier = Modifier.size(17.dp)
+                            )
+                        }
                     }
                 }
                 Text(

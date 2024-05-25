@@ -62,7 +62,7 @@ fun ProFileNavigation() {
 @Composable
 fun NavigationHostProfile(navController: NavHostController) {
     NavHost(navController, startDestination = NavigationItem.Home.route) {
-        composable(NavigationItem.Home.route) { HomeContent() }
+        composable(NavigationItem.Home.route) { HomeContent(navController) }
         composable(NavigationItem.Favorites.route) { FavoriteScreenContent() }
         composable(NavigationItem.Notification.route) { NotificationScreenContent() }
         composable(NavigationItem.Profile.route) { ProfileScreenContent() }
